@@ -1,6 +1,7 @@
 package com.example.mongoproject.init;
 
 import com.example.mongoproject.models.Image;
+import com.example.mongoproject.models.Artist;
 import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
@@ -37,19 +38,28 @@ public class ImageFactory {
 
     public List<String> artistInfo() {
         List<String> info = new ArrayList<>();
-        // Генерируйте информацию о художнике, например, имя, национальность, стиль, биография и другое
         info.add(faker.artist().name());
         info.add(faker.artist().name());
         info.add(faker.lorem().sentence());
-        // Добавьте другие атрибуты информации о художнике по мере необходимости
         return info;
     }
 
     public Image make(UnaryOperator<Image>... images) {
         final Image result = new Image(name(), artist(), year(), genre(), number_of_paintings());
-        result.setArtistInfo(artistInfo()); // Устанавливаем информацию о художнике
         Stream.of(images).forEach(v -> v.apply(result));
+
+        Artist artist = makeArtist(); // Создаем художника
+        result.setArtistInfo(artist); // Устанавливаем художника для изображения
+
         return result;
+    }
+
+    public Artist makeArtist() {
+        Artist artist = new Artist();
+        artist.setName(faker.artist().name());
+        artist.setNationality(faker.artist().name());
+        artist.setBiography(faker.lorem().sentence());
+        return artist;
     }
 
     public static UnaryOperator<Image> oneUpId = s -> {

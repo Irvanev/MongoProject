@@ -1,7 +1,9 @@
 package com.example.mongoproject.services.impl;
 
 import com.example.mongoproject.exceptions.ClientErrorException;
+import com.example.mongoproject.models.Artist;
 import com.example.mongoproject.models.Image;
+import com.example.mongoproject.repositories.ArtistRepository;
 import com.example.mongoproject.services.ImageService;
 import com.example.mongoproject.repositories.ImageRepository;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
+    private final ArtistRepository artistRepository;
 
-    public ImageServiceImpl(ImageRepository imageRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository, ArtistRepository artistRepository) {
         this.imageRepository = imageRepository;
+        this.artistRepository = artistRepository;
     }
     @Override
     public Image createImage(Image image) {
@@ -37,16 +41,27 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.findByName(name);
     }
     @Override
-    public void deleteImage(String id) {
-        imageRepository.deleteById(id);
+    public void deleteImage(String imageId) {
+        Image image = imageRepository.findById(imageId).orElse(null);
+        if (image != null) {
+            Artist artist = image.getArtistInfo();
+            if (artist != null) {
+                artistRepository.delete(artist);
+            }
+            imageRepository.delete(image);
+        }
     }
     @Override
     public void deleteAllImage() {
         imageRepository.deleteAll();
     }
     @Override
-    public void saveAllImage(List<Image> books) {
-        imageRepository.saveAll(books);
+    public void saveAllImage(List<Image> images) {
+        for (Image image : images) {
+            Artist artist = image.getArtistInfo();
+            artistRepository.save(artist);
+            imageRepository.save(image);
+        }
     }
 
 

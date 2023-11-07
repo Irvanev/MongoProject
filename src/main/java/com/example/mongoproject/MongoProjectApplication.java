@@ -1,6 +1,7 @@
 package com.example.mongoproject;
 
 import com.example.mongoproject.init.ImageFactory;
+import com.example.mongoproject.models.Artist;
 import com.example.mongoproject.models.Image;
 import com.example.mongoproject.repositories.ImageRepository;
 import com.example.mongoproject.services.ImageService;
@@ -33,9 +34,9 @@ public class MongoProjectApplication {
         @Override
         public void run(String... args) throws Exception {
             List<Image> images = imageFactory.listBuilder().images(100, 100, image -> {
-                // Добавьте информацию о художнике к каждому изображению
-                List<String> artistInfo = imageFactory.artistInfo();
-                image.setArtistInfo(artistInfo);
+                // Создайте художника и свяжите его с изображением
+                Artist artist = imageFactory.makeArtist();
+                image.setArtistInfo(artist);
                 return image;
             });
             imageService.saveAllImage(images);
@@ -52,6 +53,7 @@ public class MongoProjectApplication {
             List<Image> storedImages = imageService.getAllImage();
             for (Image i : storedImages) {
                 System.out.println(i);
+                imageService.deleteImage(i.getId()); // Удалить изображение и связанного художника
             }
         }
     }

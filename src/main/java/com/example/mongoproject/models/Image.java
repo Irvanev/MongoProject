@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,10 +17,19 @@ public class Image {
     private String id;
     private String name;
     private String artist;
-    private List<String> artistInfo;
     private int year;
     private String genre;
     private int number_paintings;
+    @DBRef
+    private Artist artistInfo;
+
+    public void setArtistInfo(Artist artistInfo) {
+        this.artistInfo = artistInfo;
+    }
+
+    public Artist getArtistInfo() {
+        return artistInfo;
+    }
 
     public Image(String name, String artist, int year, String genre, int number_paintings) {
         this.name = name;
@@ -51,14 +61,6 @@ public class Image {
 
     public void setArtist(String artist) {
         this.artist = artist;
-    }
-
-    public List<String> getArtistInfo() {
-        return artistInfo;
-    }
-
-    public void setArtistInfo(List<String> artistInfo) {
-        this.artistInfo = artistInfo;
     }
 
     public int getYear() {
