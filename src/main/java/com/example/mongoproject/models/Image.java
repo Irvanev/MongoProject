@@ -8,12 +8,15 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 @Document(collection = "images")
 public class Image {
     @Id
     private String id;
     private String name;
     private String artist;
+    private List<String> artistInfo;
     private int year;
     private String genre;
     private int number_paintings;
@@ -48,6 +51,14 @@ public class Image {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public List<String> getArtistInfo() {
+        return artistInfo;
+    }
+
+    public void setArtistInfo(List<String> artistInfo) {
+        this.artistInfo = artistInfo;
     }
 
     public int getYear() {

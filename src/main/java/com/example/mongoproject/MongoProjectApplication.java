@@ -19,9 +19,7 @@ import java.util.List;
 public class MongoProjectApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(MongoProjectApplication.class);
-        app.setDefaultProperties(Collections.singletonMap("spring.profiles.default", "mongodb"));
-        app.run(args);
+        SpringApplication.run(MongoProjectApplication.class, args);
     }
 
     @Component
@@ -34,10 +32,16 @@ public class MongoProjectApplication {
 
         @Override
         public void run(String... args) throws Exception {
-            List<Image> images = imageFactory.listBuilder().images(100,100);
+            List<Image> images = imageFactory.listBuilder().images(100, 100, image -> {
+                // Добавьте информацию о художнике к каждому изображению
+                List<String> artistInfo = imageFactory.artistInfo();
+                image.setArtistInfo(artistInfo);
+                return image;
+            });
             imageService.saveAllImage(images);
         }
     }
+
     @Component
     public class CustomCode implements CommandLineRunner {
         @Autowired
@@ -52,3 +56,4 @@ public class MongoProjectApplication {
         }
     }
 }
+
