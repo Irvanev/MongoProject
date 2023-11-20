@@ -34,7 +34,6 @@ public class MongoProjectApplication {
         @Override
         public void run(String... args) throws Exception {
             List<Image> images = imageFactory.listBuilder().images(100, 100, image -> {
-                // Создайте художника и свяжите его с изображением
                 Artist artist = imageFactory.makeArtist();
                 image.setArtistInfo(artist);
                 return image;
